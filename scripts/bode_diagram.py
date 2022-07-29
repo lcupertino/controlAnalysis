@@ -26,6 +26,8 @@ graph_name = vars(args)["graph"]
 print(K)
 print(num)
 print(den)
+print(file_name[0])
+print(graph_name)
 
 def generate_transfer_function(gain, num, den):
     return gain*control.tf(num, den)
@@ -64,10 +66,10 @@ def obtain_tex_code(gain, transfer_function):
         return "$\dfrac{" + str_gain + " (" + str_num + ")}" + "{" + str_den + "}$"
 
 
-# print(obtain_tex_code(K, G))
+print(obtain_tex_code(K, G))
 w = np.logspace(-2,2)
 magnitude, phase, omega = control.bode(G,w)
-# plt.title(label = graph_name)
-# plt.savefig(fname='{}'.format(file_name), format="pdf")
-# plt.savefig(fname='{}.png'.format(file_name))
+plt.title(label = graph_name)
+plt.savefig(fname='{}.pdf'.format(file_name[0]))
+plt.savefig(fname='{}.png'.format(file_name[0]))
 plt.show()
