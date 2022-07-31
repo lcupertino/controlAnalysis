@@ -1,11 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import control
+import argparse
+
 plt.rcParams.update({
     "text.usetex": True
 })
-
-import argparse
 
 parser = argparse.ArgumentParser(description="Bode diagram with Python")
 parser.add_argument("--K", action="store", nargs=1, default=1.0, type=float)
@@ -25,17 +25,18 @@ file_name = vars(args)["name"]
 graph_name = vars(args)["graph"]
 save = vars(args)["save"]
 
-print(K)
-print(num)
-print(den)
-print(file_name[0])
-print(graph_name)
-
 def generate_transfer_function(gain, num, den):
     return gain*control.tf(num, den)
 
-G = generate_transfer_function(K, num, den)
-print(G)
+def write_polynomial(coeficients):
+	term = ""
+	num_of_terms=len(coeficients)
+	for i, coeficient in enumerate(coeficients):
+		if(i==len(coeficients)-1):
+			term += "+{}".format(str(coeficient))
+		else:
+			term += term + "+{}".format(str(coeficient)) + "s^{"+"{}".format(str(num_of_terms-i-1)) + "}"			
+	return term
 
 def write_numerator(transfer_function):
     str_num = ""
@@ -57,8 +58,8 @@ def write_denominator(transfer_function):
             str_den = str_den + "+{}".format(str(elem)) + "s^{}".format(str(num_of_terms-i-1))
     return str_den    
 
-def generate_tex_fraction(str_gain, str_num, str_den):
-    pass
+def generate_tex_fraction(gain, num, den):
+    return "$"+str(gain)+"\dfrac{"+str(num)+"}{"+str(den)+"}$"
 
 def obtain_tex_code(gain, transfer_function):
     if(generate_tex):
@@ -67,11 +68,18 @@ def obtain_tex_code(gain, transfer_function):
         str_den = write_denominator(transfer_function)
         return "$\dfrac{" + str_gain + " (" + str_num + ")}" + "{" + str_den + "}$"
 
+print(K)
+print(num)
+print(den)
+print(file_name[0])
+print(graph_name)
+G = generate_transfer_function(K, num, den)
+print(G)
 
 # print(obtain_tex_code(K, G))
 w = np.logspace(-2,2)
 magnitude, phase, omega = control.bode(G,w,dB=True,deg=True)
-plt.title(label = graph_name)
+plt.title(label=graph_name)
 
 if(save):
     plt.savefig(fname='{}.pdf'.format(file_name[0]))
