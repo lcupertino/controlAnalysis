@@ -14,6 +14,7 @@ parser.add_argument("--den", action="store", nargs="*", default=1.0, type=float)
 parser.add_argument("--tex", action="store", nargs=1, default=False, type=bool)
 parser.add_argument("--name", action="store", nargs="*", default="bode_diagram", type=str)
 parser.add_argument("--graph", action="store", nargs="*", default="$F(s)$", type=str)
+parser.add_argument("--save", action="store", nargs=1, default=False, type=bool)
 args = parser.parse_args()
 
 K = vars(args)["K"]
@@ -22,6 +23,7 @@ den = vars(args)["den"]
 generate_tex = vars(args)["tex"]
 file_name = vars(args)["name"]
 graph_name = vars(args)["graph"]
+save = vars(args)["save"]
 
 print(K)
 print(num)
@@ -66,10 +68,13 @@ def obtain_tex_code(gain, transfer_function):
         return "$\dfrac{" + str_gain + " (" + str_num + ")}" + "{" + str_den + "}$"
 
 
-print(obtain_tex_code(K, G))
+# print(obtain_tex_code(K, G))
 w = np.logspace(-2,2)
-magnitude, phase, omega = control.bode(G,w)
+magnitude, phase, omega = control.bode(G,w,dB=True,deg=True)
 plt.title(label = graph_name)
-plt.savefig(fname='{}.pdf'.format(file_name[0]))
-plt.savefig(fname='{}.png'.format(file_name[0]))
+
+if(save):
+    plt.savefig(fname='{}.pdf'.format(file_name[0]))
+    plt.savefig(fname='{}.png'.format(file_name[0]))
+
 plt.show()
