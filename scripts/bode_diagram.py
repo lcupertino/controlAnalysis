@@ -77,9 +77,9 @@ G = generate_transfer_function(K, num, den)
 print(G)
 
 # print(obtain_tex_code(K, G))
+plt.title(label=graph_name)
 w = np.logspace(-2,2)
 magnitude, phase, omega = control.bode(G,w,dB=True,deg=True)
-plt.title(label=graph_name)
 
 if(save):
     plt.savefig(fname='{}.pdf'.format(file_name[0]))
