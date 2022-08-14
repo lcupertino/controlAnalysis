@@ -5,4 +5,8 @@ plt.rcParams.update({
     "text.usetex":True
 })
 
-
+class Compensator:
+    def __init__(self, gain, numerator, denominator):
+        self.gain=gain
+        self.numerator=numerator
+        self.denominator=denominator
