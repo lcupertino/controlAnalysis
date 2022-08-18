@@ -10,3 +10,9 @@ class Compensator:
         self.gain=gain
         self.numerator=numerator
         self.denominator=denominator
+
+    def evaluate_nature(self):
+        pass
+
+    def plot_bode(self):
+        pass
