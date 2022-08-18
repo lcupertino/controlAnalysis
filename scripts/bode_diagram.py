@@ -14,11 +14,16 @@ class BodeDiagram:
         term=""
         num_of_terms=len(coeficients)
         for i, coeficient in enumerate(coeficients):
-            if(i==len(coeficiente)-1):
-                term+="+{}".format(str(coeficient))
-
+            if(i==len(coeficients)-1):
+                if(coeficient > 0):
+                    term+="+{}".format(str(coeficient))
+                else:
+                    term+="{}".format(str(coeficient))
             else:
-                term+= term+"+{}".format(str(coeficient))+"s^{"+"{}".format(str(num_of_terms-i-1)) + "}"
+                if(coeficient > 0):
+                    term+= term+"+{}".format(str(coeficient))+"s^{"+"{}".format(str(num_of_terms-i-1)) + "}"
+                else:
+                    term+= term+"{}".format(str(coeficient))+"s^{"+"{}".format(str(num_of_terms-i-1)) + "}"
 
         return term
 
@@ -26,9 +31,18 @@ class BodeDiagram:
         den = self.write_polynomial(self.transfer_function.den[0][0])
         num = self.write_polynomial(self.transfer_function.num[0][0])
 
-        return "$"+str(self.gain)+"\dfrac{"+num+"}{"+den+"}"
+        return "$"+str(self.gain)+"\dfrac{"+num+"}{"+den+"}$"
     
     def save_plot(self, save):
         if(save):
             plt.savefig(fname='{}.pdf'.format(self.file_name))
             plt.savefig(fname='{}.png'.format(self.file_name))
+
+    def plot_diagram(self, graph_name, save):
+        plt.title(label=graph_name)
+        w = np.logspace(-2,2)
+        magnitude, phase, omega = control.bode(self.transfer_function, w, dB=True, deg=True)
+        self.save_plot(save)
+        plt.show()
+
+

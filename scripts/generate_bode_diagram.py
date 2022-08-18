@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import control
 import argparse
+from bode_diagram import BodeDiagram
 
 plt.rcParams.update({
     "text.usetex": True
@@ -28,63 +29,18 @@ save = vars(args)["save"]
 def generate_transfer_function(gain, num, den):
     return gain*control.tf(num, den)
 
-def write_polynomial(coeficients):
-	term = ""
-	num_of_terms=len(coeficients)
-	for i, coeficient in enumerate(coeficients):
-		if(i==len(coeficients)-1):
-			term += "+{}".format(str(coeficient))
-		else:
-			term += term + "+{}".format(str(coeficient)) + "s^{"+"{}".format(str(num_of_terms-i-1)) + "}"			
-	return term
-
-def write_numerator(transfer_function):
-    str_num = ""
-    num_of_terms = len(transfer_function.num[0][0])
-    for i, elem in enumerate(transfer_function.num[0][0]):
-        if(i==num_of_terms-1):
-            str_num = str_num + "+{}".format(str(elem))
-        else:
-            str_num = str_num + "+{}".format(str(elem)) + "s^{}".format(str(num_of_terms-i-1))
-    return str_num
-
-def write_denominator(transfer_function):
-    str_den = ""
-    num_of_terms = len(transfer_function.den[0][0])
-    for i, elem in enumerate(transfer_function.den[0][0]):
-        if(i==num_of_terms-1):
-            str_den = str_den + "+{}".format(str(elem))
-        else:
-            str_den = str_den + "+{}".format(str(elem)) + "s^{}".format(str(num_of_terms-i-1))
-    return str_den    
-
-def generate_tex_fraction(gain, num, den):
-    return "$"+str(gain)+"\dfrac{"+str(num)+"}{"+str(den)+"}$"
-
-def obtain_tex_code(gain, transfer_function):
+def obtain_tex_code(gain, transfer_function, generate_tex):
     if(generate_tex):
         str_gain = "{}".format(str(gain[0]))
         str_num = write_numerator(transfer_function)    
         str_den = write_denominator(transfer_function)
         return "$\dfrac{" + str_gain + " (" + str_num + ")}" + "{" + str_den + "}$"
 
-def save_plot(save, file_name):
-    if(save):
-        plt.savefig(fname='{}.pdf'.format(file_name))
-        plt.savefig(fname='{}.png'.format(file_name))
+if __name__=="__main__":
+    G = generate_transfer_function(K, num, den)
+    bodeDiagram = BodeDiagram(K, G, file_name[0])
+    print(bodeDiagram.write_polynomial(num))
+    print(bodeDiagram.write_polynomial(den))
+    print(bodeDiagram.generate_tex_code())
+    bodeDiagram.plot_diagram("$F(s)$", save=True)
 
-G = generate_transfer_function(K, num, den)
-plt.title(label=graph_name)
-w = np.logspace(-2,2)
-magnitude, phase, omega = control.bode(G,w,dB=True,deg=True)
-
-# Tests
-print(G)
-print(K)
-print(num)
-print(den)
-print(file_name[0])
-print(graph_name)
-
-save_plot(save, file_name[0])
-plt.show()
