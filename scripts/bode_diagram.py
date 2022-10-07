@@ -33,10 +33,9 @@ class BodeDiagram:
 
         return "$"+str(self.gain)+"\dfrac{"+num+"}{"+den+"}$"
     
-    def save_plot(self, save):
-        if(save):
-            plt.savefig(fname='{}.pdf'.format(self.file_name))
-            plt.savefig(fname='{}.png'.format(self.file_name))
+    def save_plot(self):
+        plt.savefig(fname='{}.pdf'.format(self.file_name))
+        plt.savefig(fname='{}.png'.format(self.file_name))
 
     def plot_diagram(self, graph_name, save):
         plt.title(label=graph_name)
